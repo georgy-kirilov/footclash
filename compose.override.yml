@@ -1,0 +1,13 @@
+services:
+  application:
+    build:
+      dockerfile: Application/Dockerfile.dev
+    restart: "no"
+    volumes:
+      - ./Application:/src/Application:delegated
+      - application_obj:/src/Application/obj
+      - application_bin:/src/Application/bin
+
+volumes:
+  application_obj:
+  application_bin:
