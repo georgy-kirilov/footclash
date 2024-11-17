@@ -14,6 +14,7 @@
   <Folder Name="/SolutionItems/.github/workflows/">
     <File Path=".github\workflows\build.yml" />
     <File Path=".github\workflows\build-and-push-docker-image.yml" />
+    <File Path=".github\workflows\deploy-to-digital-ocean.yml" />
   </Folder>
   <Project Path="Application\Application.csproj" Type="Classic C#" />
   <Project Path="IntegrationTests\IntegrationTests.csproj" Type="Classic C#" />
