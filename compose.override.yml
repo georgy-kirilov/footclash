@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "no"
+    ports:
+      - "5000:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
+      - PG_DB=${PG_DB}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+    volumes:
+      - .:/src:delegated
+      - application_obj:/src/Application/obj
+      - application_bin:/src/Application/bin
+      - unit_tests_obj:/src/UnitTests/obj
+      - unit_tests_bin:/src/UnitTests/bin
+      - integration_tests_obj:/src/IntegrationTests/obj
+      - integration_tests_bin:/src/IntegrationTests/bin
+
+volumes:
+  application_obj:
+  application_bin:
+  unit_tests_obj:
+  unit_tests_bin:
+  integration_tests_obj:
+  integration_tests_bin:

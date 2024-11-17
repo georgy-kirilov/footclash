@@ -1,0 +1,88 @@
+
+# Ignore bin and obj directories (compiled binaries and temporary build files)
+**/bin
+**/obj
+
+# Ignore build outputs (artifacts)
+artifacts/
+publish/
+out/
+dist/
+
+# Ignore user-specific files (Visual Studio/IDE specific)
+**/*.user
+**/*.userosscache
+**/*.suo
+**/*.sln.docstates
+.vscode/
+.vs/
+.idea/
+*.code-workspace
+# Rider/JetBrains IDE settings
+.idea/
+*.sln.iml
+
+# Ignore test-related directories (Test Results)
+TestResults/
+*.trx
+*.coverage
+*.testlog
+coverage/
+
+# Ignore package directories (NuGet package cache)
+**/packages
+# Uncomment if you have a global packages folder
+# **/global-packages
+
+# Ignore ASP.NET generated files
+**/Properties/launchSettings.json
+wwwroot/
+node_modules/
+
+# Ignore log and temp files (general, including lock and swap files)
+*.log
+**/*.log
+logs/
+*.swp
+*.lock
+*.tmp
+*.temp
+*.cache
+**/*.pid
+
+# Ignore dotnet-specific directories (local caches, dependencies)
+.nuget/
+dotnet_tool.json
+**/project.lock.json
+**/*.nuget.props
+**/*.nuget.targets
+.nuget/packages/
+.nuget/fallbackfolders/
+
+# Ignore docker-related files
+Dockerfile*
+docker-compose*
+
+# Ignore configuration files that may be sensitive or local-specific
+**/appsettings.Development.json
+**/appsettings.local.json
+.env
+.env.*
+
+# Ignore git-related files (Version control-related)
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# Ignore temporary files and lock files
+*.tmp
+*.temp
+*.pid
+*.lock
+*.DS_Store  # Mac OS specific
+
+# Ignore operating system-specific files
+Thumbs.db  # Windows specific
+ehthumbs.db
+Desktop.ini
