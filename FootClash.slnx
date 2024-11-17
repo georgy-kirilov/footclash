@@ -1,0 +1,21 @@
+﻿<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path=".dockerignore" />
+    <File Path=".env" />
+    <File Path=".env.example" />
+    <File Path=".gitignore" />
+    <File Path="compose.override.yml" />
+    <File Path="compose.yml" />
+    <File Path="Dockerfile" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/SolutionItems/.github/" />
+  <Folder Name="/SolutionItems/.github/workflows/">
+    <File Path=".github\workflows\build.yml" />
+    <File Path=".github\workflows\build-and-push-docker-image.yml" />
+  </Folder>
+  <Project Path="Application\Application.csproj" Type="Classic C#" />
+  <Project Path="IntegrationTests\IntegrationTests.csproj" Type="Classic C#" />
+  <Project Path="UnitTests\UnitTests.csproj" Type="Classic C#" />
+</Solution>

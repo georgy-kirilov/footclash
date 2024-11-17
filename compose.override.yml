@@ -1,11 +1,11 @@
 services:
-  footclash:
+  api:
     build:
       context: .
-      dockerfile: Dockerfile.devbox
+      dockerfile: Dockerfile
     restart: "no"
     ports:
-      - 5000:8080
+      - "5000:8080"
     depends_on:
       postgres:
         condition: service_healthy
