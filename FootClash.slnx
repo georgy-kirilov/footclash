@@ -2,13 +2,13 @@
   <Folder Name="/SolutionItems/">
     <File Path=".dockerignore" />
     <File Path=".env" />
-    <File Path=".env.example" />
     <File Path=".gitignore" />
     <File Path="compose.override.yml" />
     <File Path="compose.yml" />
     <File Path="Dockerfile" />
     <File Path="nuget.config" />
     <File Path="README.md" />
+    <File Path=".env.example" />
   </Folder>
   <Folder Name="/SolutionItems/.github/" />
   <Folder Name="/SolutionItems/.github/workflows/">

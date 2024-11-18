@@ -1,22 +1,64 @@
 services:
+  api:
+    image: georgink/footclash-api:latest
+    env_file:
+      - .env
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DB=app_db
+      - PG_USER=admin
+    ports:
+      - "5000:8080"
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "256M"
+        reservations:
+          cpus: "0.25"
+          memory: "128M"
+    networks:
+      - app-network
+
   postgres:
     image: postgres:16.3
-    restart: unless-stopped
-    ports:
-      - ${PG_PORT}:${PG_PORT}
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=${PG_USER}
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_DB=app_db
+      - POSTGRES_USER=admin
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB} || exit 1"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -U admin -d app_db || exit 1"]
+      interval: 5s
       timeout: 3s
       retries: 3
       start_period: 5s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
-    driver: local
+
+networks:
+  app-network:
+    driver: overlay
+    attachable: true
