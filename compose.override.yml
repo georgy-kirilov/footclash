@@ -1,33 +1,35 @@
 services:
   api:
+    image: footclash-api-local
     build:
       context: .
-      dockerfile: Dockerfile
-    restart: "no"
-    ports:
-      - "5000:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - PG_HOST=${PG_HOST}
-      - PG_PORT=${PG_PORT}
-      - PG_DB=${PG_DB}
-      - PG_USER=${PG_USER}
-      - PG_PASSWORD=${PG_PASSWORD}
+      dockerfile: Application/Dockerfile
+    deploy:
+      replicas: 1
+    labels: !override
+      - "traefik.enable=true"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.middlewares.api-strip-prefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.middlewares=api-strip-prefix"
     volumes:
-      - .:/src:delegated
-      - application_obj:/src/Application/obj
+      - .:/src
+      - application_nuget_cache:/root/.nuget/packages
       - application_bin:/src/Application/bin
-      - unit_tests_obj:/src/UnitTests/obj
-      - unit_tests_bin:/src/UnitTests/bin
-      - integration_tests_obj:/src/IntegrationTests/obj
-      - integration_tests_bin:/src/IntegrationTests/bin
+      - application_obj:/src/Application/obj
+
+  traefik:
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports: !override
+      - "5000:80"
+      - "8080:8080"
 
 volumes:
-  application_obj:
+  application_nuget_cache:
   application_bin:
-  unit_tests_obj:
-  unit_tests_bin:
-  integration_tests_obj:
-  integration_tests_bin:
+  application_obj:

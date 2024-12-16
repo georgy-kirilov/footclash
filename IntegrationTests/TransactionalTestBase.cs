@@ -19,13 +19,24 @@ public abstract class TransactionalTestBase : IAsyncLifetime
     protected TransactionalTestBase()
     {
         _databaseName = $"footclash-{GetType().Name}-{DateTimeOffset.Now.ToUnixTimeMilliseconds()}";
-        
+
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new(ConnectionString.PgDbSection, _databaseName)
+        };
+
+        var insideContainer = Environment.GetEnvironmentVariable("INSIDE_CONTAINER") is not null;
+        if (!insideContainer)
+        {
+            inMemorySettings.Add(new(ConnectionString.PgHostSection, "localhost"));
+            inMemorySettings.Add(new(ConnectionString.PgPortSection, "5432"));
+            inMemorySettings.Add(new(ConnectionString.PgPasswordSection, "Qwerty1@"));
+            inMemorySettings.Add(new(ConnectionString.PgUserSection, "admin"));
+        }
+
         var configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables()
-            .AddInMemoryCollection(
-            [
-                new KeyValuePair<string, string?>(ConnectionString.PgDbSection, _databaseName)
-            ])
+            .AddInMemoryCollection(inMemorySettings)
             .Build();
 
         _connectionString = ConnectionString.Get(configuration);

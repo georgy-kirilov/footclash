@@ -7,6 +7,10 @@ public sealed class WriteDbContext(DbContextOptions<WriteDbContext> options) : D
     public sealed record ConnectionString
     {
         public const string PgDbSection = "PG_DB";
+        public const string PgHostSection = "PG_HOST";
+        public const string PgPortSection = "PG_PORT";
+        public const string PgPasswordSection = "PG_PASSWORD";
+        public const string PgUserSection = "PG_USER";
         
         private ConnectionString(string value) => Value = value;
 

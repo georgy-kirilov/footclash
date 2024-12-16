@@ -1,9 +1,51 @@
 services:
+  api:
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
+      - PG_DB=${PG_DB}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=certresolver"
+
+  traefik:
+    image: traefik:v3.2
+    restart: unless-stopped
+    depends_on:
+      - api
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.certresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.certresolver.acme.email=${SSL_EMAIL}"
+      - "--certificatesresolvers.certresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+
   postgres:
     image: postgres:16.3
     restart: unless-stopped
     ports:
-      - ${PG_PORT}:${PG_PORT}
+      - "${PG_PORT}:5432"
     environment:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
@@ -18,5 +60,5 @@ services:
       start_period: 5s
 
 volumes:
+  letsencrypt:
   postgres_data:
-    driver: local
