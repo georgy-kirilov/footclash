@@ -15,9 +15,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.api.loadbalancer.server.port=8080"
-      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=certresolver"
+      - "traefik.http.middlewares.api-strip-prefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.middlewares=api-strip-prefix"
 
   traefik:
     image: traefik:v3.2

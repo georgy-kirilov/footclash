@@ -15,9 +15,13 @@ services:
       - "traefik.http.routers.api.middlewares=api-strip-prefix"
     volumes:
       - .:/src
-      - application_nuget_cache:/root/.nuget/packages
+      - nuget_cache:/root/.nuget/packages
       - application_bin:/src/Application/bin
       - application_obj:/src/Application/obj
+      - unit_tests_bin:/src/UnitTests/bin
+      - unit_tests_obj:/src/UnitTests/obj
+      - integration_tests_bin:/src/IntegrationTests/bin
+      - integration_tests_obj:/src/IntegrationTests/obj
 
   traefik:
     command:
@@ -28,8 +32,14 @@ services:
     ports: !override
       - "5000:80"
       - "8080:8080"
+    volumes: !override
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
-  application_nuget_cache:
+  nuget_cache:
   application_bin:
   application_obj:
+  unit_tests_bin:
+  unit_tests_obj:
+  integration_tests_bin:
+  integration_tests_obj:
