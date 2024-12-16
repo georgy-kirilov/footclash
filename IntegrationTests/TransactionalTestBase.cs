@@ -20,25 +20,26 @@ public abstract class TransactionalTestBase : IAsyncLifetime
     {
         _databaseName = $"footclash-{GetType().Name}-{DateTimeOffset.Now.ToUnixTimeMilliseconds()}";
 
-        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        var inMemorySettings = new Dictionary<string, string?>
         {
-            new(ConnectionString.PgDbSection, _databaseName)
+            [ConnectionString.PgDbSection] = _databaseName
         };
-
+        
         var insideContainer = Environment.GetEnvironmentVariable("INSIDE_CONTAINER") is not null;
+        
         if (!insideContainer)
         {
-            inMemorySettings.Add(new(ConnectionString.PgHostSection, "localhost"));
-            inMemorySettings.Add(new(ConnectionString.PgPortSection, "5432"));
-            inMemorySettings.Add(new(ConnectionString.PgPasswordSection, "Qwerty1@"));
-            inMemorySettings.Add(new(ConnectionString.PgUserSection, "admin"));
+            inMemorySettings.Add(ConnectionString.PgHostSection, "localhost");
+            inMemorySettings.Add(ConnectionString.PgPortSection, "5432");
+            inMemorySettings.Add(ConnectionString.PgPasswordSection, "Qwerty1@");
+            inMemorySettings.Add(ConnectionString.PgUserSection, "admin");
         }
 
         var configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
-
+        
         _connectionString = ConnectionString.Get(configuration);
         _adminConnectionString = _connectionString.Value.Replace(_databaseName, "postgres");
     }
@@ -71,7 +72,7 @@ public abstract class TransactionalTestBase : IAsyncLifetime
         {
             return;
         }
-
+        
         await using var createCommand = adminConnection.CreateCommand();
         createCommand.CommandText = $"CREATE DATABASE \"{_databaseName}\"";
         await createCommand.ExecuteNonQueryAsync();

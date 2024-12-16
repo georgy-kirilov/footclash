@@ -1,6 +1,6 @@
 services:
   api:
-    image: footclash-api-local
+    image: local/footclash-api:dev
     build:
       context: .
       dockerfile: Application/Dockerfile
